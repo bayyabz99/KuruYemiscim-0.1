@@ -1,0 +1,115 @@
+<%- include('../partials/header') %>
+
+<div class="container page-card reveal">
+  <!-- Stepper -->
+  <div class="checkout-stepper">
+    <div class="step-item completed">
+      <div class="step-badge">✓</div>
+      <span class="step-label">Sepetim</span>
+    </div>
+    <div class="step-item active" id="stepInfo">
+      <div class="step-badge">2</div>
+      <span class="step-label">Teslimat & Ödeme</span>
+    </div>
+    <div class="step-item" id="stepComplete">
+      <div class="step-badge">3</div>
+      <span class="step-label">Tamamlandı</span>
+    </div>
+  </div>
+
+  <div id="checkoutSummaryArea" class="checkout-summary reveal stagger-1">
+    <h3>📦 Sipariş Özeti</h3>
+    <div id="checkoutItems"></div>
+    <div class="checkout-summary-item total">
+      <span>Genel Toplam</span>
+      <span id="checkoutTotal">0,00 ₺</span>
+    </div>
+  </div>
+
+  <form id="checkoutForm" class="reveal stagger-2">
+    <h2 style="font-size:1.25rem; margin-bottom:1.25rem; font-family: var(--font-heading); color: var(--earth); font-weight:800; border-left: 4px solid var(--primary); padding-left: 0.50rem;">Teslimat Bilgileri</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Ad Soyad *</label>
+        <input type="text" name="name" required placeholder="Örn: Ahmet Yılmaz">
+      </div>
+      <div class="form-group">
+        <label>Telefon *</label>
+        <input type="tel" name="phone" required placeholder="05XX XXX XX XX" pattern="[0-9]{10,11}" title="Lütfen geçerli bir telefon numarası giriniz">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>E-posta Adresi (Opsiyonel)</label>
+      <input type="email" name="email" placeholder="ahmet@example.com">
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>İl *</label>
+        <input type="text" name="city" value="Konya" required>
+      </div>
+      <div class="form-group">
+        <label>İlçe *</label>
+        <input type="text" name="district" required placeholder="İlçenizi yazın">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>Açık Adres *</label>
+      <textarea name="address" rows="3" required placeholder="Mahalle, cadde, sokak, bina no, daire no ve tarifi giriniz..."></textarea>
+    </div>
+
+    <h2 style="font-size:1.25rem; margin:2.5rem 0 1.25rem; font-family: var(--font-heading); color: var(--earth); font-weight:800; border-left: 4px solid var(--accent); padding-left: 0.50rem;">Ödeme Yöntemi</h2>
+    <div class="payment-options">
+      <% if (paymentMethods.credit_card) { %>
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="credit_card">
+          <span>💳 Kredi Kartı ile Online Ödeme</span>
+        </label>
+      <% } %>
+      <% if (paymentMethods.cash_on_delivery) { %>
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="cash_on_delivery" checked>
+          <span>💵 Kapıda Nakit Ödeme</span>
+        </label>
+      <% } %>
+      <% if (paymentMethods.card_on_delivery) { %>
+        <label class="payment-option">
+          <input type="radio" name="payment_method" value="card_on_delivery">
+          <span>💳 Kapıda Kredi Kartı ile Ödeme</span>
+        </label>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label>Sipariş Notu</label>
+      <textarea name="notes" rows="2" placeholder="Varsa kuryeye notunuz veya özel paketleme istekleriniz..."></textarea>
+    </div>
+
+    <div class="trust-inline" style="margin: 2rem 0; justify-content: center; border-color: rgba(78, 124, 58, 0.15);">
+      <span class="trust-inline-item">🌿 %100 Taze Ürün</span>
+      <span class="trust-inline-item">🔒 Güvenli Altyapı</span>
+      <span class="trust-inline-item">🚚 Hızlı Kurye</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" style="font-size: 1.05rem; padding: 1.1rem; font-weight:800;">Siparişi Onayla & Bitir</button>
+  </form>
+
+  <!-- Success Page -->
+  <div id="orderSuccess" style="display:none; text-align:center; padding:3.5rem 1.5rem; max-width: 550px; margin-inline: auto;" class="reveal">
+    <div style="font-size: 5rem; margin-bottom: 1.5rem; animation: logoFloat 3s ease-in-out infinite; display:inline-block;">🎉</div>
+    <h2 style="color:var(--primary); margin-bottom: 0.75rem; font-size: 2rem; font-weight:800;">Siparişiniz Alındı!</h2>
+    <p style="color: var(--text-muted); font-size:1.05rem; margin-bottom: 1.5rem; line-height: 1.8;">
+      Taptaze kuruyemiş ve organik ürünleriniz hazırlanmak üzere işleme alınmıştır. En kısa sürede teslimat için yola çıkacaktır.
+    </p>
+    <div style="background: var(--bg-warm); border:1px solid var(--border); border-radius: var(--radius-sm); padding:1.25rem; margin-bottom: 2rem;">
+      <p style="margin:0; font-size:0.9rem; color:var(--text-muted);">Sipariş Takip Numaranız</p>
+      <strong id="orderNumber" style="color: var(--earth); font-size: 1.6rem; letter-spacing: 0.05em; font-family: var(--font-heading); display:block; margin-top:0.25rem;"></strong>
+    </div>
+    <a href="/" class="btn btn-primary" style="padding:0.85rem 2.5rem; font-weight:700;">Ana Sayfaya Dön</a>
+  </div>
+</div>
+
+<script src="/js/checkout.js"></script>
+<%- include('../partials/footer') %>

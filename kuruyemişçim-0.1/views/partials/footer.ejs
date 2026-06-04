@@ -1,0 +1,73 @@
+</main>
+
+<!-- SVG Curved Section Divider -->
+<div style="background: var(--bg-warm); height: 60px; overflow: hidden; margin-top: auto;">
+  <svg viewBox="0 0 1200 120" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; fill: var(--earth);">
+    <path d="M0,0 C150,90 350,120 600,120 C850,120 1050,90 1200,0 L1200,120 L0,120 Z"></path>
+  </svg>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="reveal">
+      <h4 style="font-size:1.35rem; font-weight:800; display:flex; align-items:center; gap:0.5rem; color:var(--white);">
+        <span style="animation: logoFloat 3s ease-in-out infinite; display:inline-block;">🥜</span>
+        <%= settings?.site_name || 'TAZECİ' %>
+      </h4>
+      <p style="margin: 1rem 0 1.5rem; color: rgba(255, 255, 255, 0.7); line-height: 1.8;">
+        <%= settings?.site_tagline || 'Taptaze kuruyemişler, kuru meyveler ve organik atıştırmalıklar. Doğanın en taze lezzetlerini kapınıza getiriyoruz.' %>
+      </p>
+      <!-- Social Media Badges -->
+      <div style="display:flex; gap:0.75rem; margin-top:1rem;">
+        <% if (settings?.instagram_url) { %>
+          <a href="<%= settings.instagram_url %>" target="_blank" rel="noopener" aria-label="Instagram" style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.08); color:var(--white); transition:all 0.3s;" onmouseover="this.style.background='var(--accent)';" onmouseout="this.style.background='rgba(255,255,255,0.08)';">
+            📸
+          </a>
+        <% } %>
+        <a href="https://wa.me/<%= settings?.contact_whatsapp || '' %>" target="_blank" rel="noopener" aria-label="WhatsApp" style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.08); color:var(--white); transition:all 0.3s;" onmouseover="this.style.background='#25D366';" onmouseout="this.style.background='rgba(255,255,255,0.08)';">
+          💬
+        </a>
+      </div>
+    </div>
+    
+    <div class="reveal stagger-1">
+      <h4>Hızlı Bağlantılar</h4>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:0.75rem; padding:0;">
+        <li><a href="/urunler" style="display:inline-block; transition:transform 0.2s;" onmouseover="this.style.transform='translateX(5px)';" onmouseout="this.style.transform='none';">🌿 Tüm Ürünlerimiz</a></li>
+        <li><a href="/siparis-takip" style="display:inline-block; transition:transform 0.2s;" onmouseover="this.style.transform='translateX(5px)';" onmouseout="this.style.transform='none';">📦 Sipariş Takip</a></li>
+        <li><a href="/iletisim" style="display:inline-block; transition:transform 0.2s;" onmouseover="this.style.transform='translateX(5px)';" onmouseout="this.style.transform='none';">📞 İletişim</a></li>
+      </ul>
+    </div>
+    
+    <div class="reveal stagger-2">
+      <h4>İletişim & Sipariş</h4>
+      <p style="margin-bottom:0.75rem; display:flex; align-items:flex-start; gap:0.5rem;">
+        <span style="font-size:1.1rem;">📍</span> 
+        <span><%= settings?.contact_address || 'Türkiye' %></span>
+      </p>
+      <p style="margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem;">
+        <span style="font-size:1.1rem;">📞</span> 
+        <a href="tel:<%= settings?.contact_phone %>" style="color:var(--white); font-weight:600;"><%= settings?.contact_phone || '' %></a>
+      </p>
+      <% if (settings?.contact_email) { %>
+        <p style="margin-bottom:1.25rem; display:flex; align-items:center; gap:0.5rem;">
+          <span style="font-size:1.1rem;">✉️</span> 
+          <a href="mailto:<%= settings.contact_email %>" style="color:rgba(255,255,255,0.7);"><%= settings.contact_email %></a>
+        </p>
+      <% } %>
+      <a href="https://wa.me/<%= settings?.contact_whatsapp || '' %>" class="btn btn-whatsapp btn-block" target="_blank" rel="noopener" style="font-size: 0.85rem; padding: 0.65rem 1.25rem;">
+        🟢 WhatsApp Hızlı Sipariş
+      </a>
+    </div>
+  </div>
+  
+  <div class="container footer-bottom">
+    <p style="margin:0;">&copy; <%= new Date().getFullYear() %> <%= settings?.site_name || 'TAZECİ' %> Kuruyemiş. Tüm hakları saklıdır.</p>
+    <p style="margin:0; opacity:0.6; font-size:0.75rem;">Premium Bento Theme by Antigravity</p>
+  </div>
+</footer>
+
+<script src="/js/cart.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>

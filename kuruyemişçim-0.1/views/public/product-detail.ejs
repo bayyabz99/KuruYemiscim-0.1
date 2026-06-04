@@ -1,0 +1,292 @@
+<%- include('../partials/header') %>
+
+<div class="container product-detail">
+  <!-- Gallery Column -->
+  <div class="product-gallery reveal">
+    <div class="product-gallery-main">
+      <% if (product.images && product.images.length) { %>
+        <img src="<%= product.images[0].path %>" alt="<%= product.title %>" id="mainImage">
+      <% } else { %>
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem; background: var(--bg-warm);">🥜</div>
+      <% } %>
+    </div>
+    <% if (product.images && product.images.length > 1) { %>
+      <div class="product-gallery-thumbs" id="thumbGallery">
+        <% product.images.forEach((img, idx) => { %>
+          <div class="thumb-item <%= idx === 0 ? 'active' : '' %>" data-path="<%= img.path %>" data-color="<%= img.color_name || '' %>">
+            <img src="<%= img.path %>" alt="<%= product.title %>">
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Info Column -->
+  <div class="product-info reveal stagger-1">
+    <% if (product.category_name) { %>
+      <span class="portfolio-tag" style="margin-bottom: 0.5rem;"><%= product.category_name %></span>
+    <% } %>
+    <h1 style="margin-bottom: 0.5rem;"><%= product.title %></h1>
+
+    <!-- Price Section with Gramaj -->
+    <div class="product-price" style="margin: 1.25rem 0; align-items: center;">
+      <span class="price-current" style="font-size:2rem;" id="detailPrice"><%= formatPrice(product.sale_price || product.price) %></span>
+      <% if (product.sale_price) { %>
+        <span class="price-old" id="detailOldPrice" style="font-size:1.15rem; margin-left: 0.5rem;"><%= formatPrice(product.price) %></span>
+        <span class="badge-discount" style="position:static; display:inline-block; margin-left:.75rem; font-size: 0.8rem;">%<%= product.discount_percent %> İndirim</span>
+      <% } %>
+      <span class="price-unit" id="detailUnit" style="font-size: 1rem; margin-left: 0.5rem; font-weight: 500;">/ 1 kg</span>
+    </div>
+
+    <!-- Stock and Shipping Info -->
+    <p style="color:var(--text-muted); margin-bottom: 1.5rem; font-size: 0.92rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 500;">
+      <% if (product.stock > 0) { %>
+        <span style="color: var(--primary);">🟢 Stokta Var (<%= product.stock %> adet)</span>
+      <% } else { %>
+        <span style="color: #c0392b;">🔴 Tükendi</span>
+      <% } %>
+      <% if (product.free_shipping) { %>
+        <span>•</span>
+        <span style="color: var(--accent); font-weight: 600;">🚚 Ücretsiz Kargo</span>
+      <% } %>
+    </p>
+
+    <!-- Trust Inline Badges -->
+    <div class="trust-inline">
+      <span class="trust-inline-item">🌿 %100 Doğal Ürün</span>
+      <span class="trust-inline-item">🔥 Taze Kavrulmuş</span>
+      <span class="trust-inline-item">✨ Tazelik Garantisi</span>
+    </div>
+
+    <!-- Gramaj / Weight Selector -->
+    <div class="weight-selector">
+      <label>Gramaj / Porsiyon Seçin:</label>
+      <div class="weight-options" id="weightOptions">
+        <button type="button" class="weight-option" data-multiplier="0.25" data-label="250g">250g</button>
+        <button type="button" class="weight-option" data-multiplier="0.5" data-label="500g">500g</button>
+        <button type="button" class="weight-option active" data-multiplier="1" data-label="1 kg">1 kg</button>
+      </div>
+    </div>
+
+    <!-- Description Area -->
+    <% if (product.description) { %>
+      <div id="descriptionArea" style="margin: 1.5rem 0;">
+        <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem;">Ürün Açıklaması</h3>
+        <p style="line-height:1.8; color: var(--earth-light); font-size: 0.95rem;"><%= product.description %></p>
+      </div>
+      <div class="product-badges" id="parsedBadges" style="margin-top: 1rem;"></div>
+    <% } %>
+
+    <!-- Color / Swatches Area -->
+    <% if (product.colors && product.colors.length) { %>
+      <div class="color-options-container" style="margin: 1.75rem 0;">
+        <label style="display:block; font-weight:700; margin-bottom:.5rem; font-size:.92rem; color:var(--earth);">Seçenek / Çeşit:</label>
+        <div class="color-options">
+          <% product.colors.forEach((color, idx) => { %>
+            <div class="color-swatch-circle" 
+                 style="background-color: <%= color.hex %>;" 
+                 data-color-name="<%= color.name %>" 
+                 title="<%= color.name %>">
+            </div>
+          <% }) %>
+        </div>
+        <input type="hidden" id="selectedColorInput" value="">
+      </div>
+    <% } %>
+
+    <!-- Cart Actions -->
+    <div style="display: flex; gap: 1rem; align-items: center; margin-top: 2rem;">
+      <div class="qty-control" style="margin: 0;">
+        <button type="button" class="btn-qty" id="qtyMinus" aria-label="Azalt">−</button>
+        <input type="number" id="qty" value="1" min="1" max="<%= product.stock %>" readonly>
+        <button type="button" class="btn-qty" id="qtyPlus" aria-label="Artır">+</button>
+      </div>
+      
+      <button type="button" class="btn btn-primary" id="addToCartBtn" style="flex: 1; padding: 0.85rem;"
+        data-id="<%= product.id %>"
+        data-title="<%= product.title %>"
+        data-price="<%= product.sale_price || product.price %>"
+        data-slug="<%= product.slug %>"
+        <%= product.stock <= 0 ? 'disabled' : '' %>>
+        🛒 Sepete Ekle
+      </button>
+    </div>
+    
+    <a href="https://wa.me/<%= settings?.contact_whatsapp %>?text=<%= encodeURIComponent('Merhaba, ' + product.title + ' ürünü hakkında bilgi almak veya sipariş vermek istiyorum.') %>" class="btn btn-whatsapp btn-block" style="margin-top:.75rem" target="_blank" rel="noopener">
+      🟢 WhatsApp ile Sor & Sipariş Ver
+    </a>
+  </div>
+</div>
+
+<!-- Related Products -->
+<% if (related.length) { %>
+<section style="background: var(--bg-warm); border-top: 1px solid var(--border-light);">
+  <div class="container">
+    <h2 class="section-title reveal" style="text-align: center; margin-bottom: 2.5rem;">Benzer Lezzetler</h2>
+    <div class="product-grid reveal stagger-1">
+      <% related.forEach(function(p, index) { %>
+        <article class="product-card" style="animation: fadeIn 0.5s var(--ease) both; animation-delay: <%= index * 0.05 %>s;">
+          <a href="/urun/<%= p.slug %>">
+            <div class="product-card-image">
+              <% if (p.image_path) { %><img src="<%= p.image_path %>" alt="<%= p.title %>" loading="lazy"><% } else { %><div class="product-placeholder">🥜</div><% } %>
+            </div>
+            <div class="product-card-body">
+              <h3 class="product-card-title"><%= p.title %></h3>
+              <div class="product-price">
+                <span class="price-current"><%= formatPrice(p.sale_price || p.price) %></span>
+                <span class="price-unit">/ kg</span>
+              </div>
+            </div>
+          </a>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<script>
+const basePrice = <%= product.sale_price || product.price %>;
+const baseOldPrice = <%= product.sale_price ? product.price : 0 %>;
+const qty = document.getElementById('qty');
+const max = <%= product.stock %>;
+let currentMultiplier = 1;
+let currentWeightLabel = '1 kg';
+
+const formatPriceJS = (n) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(n);
+
+// Quantity controls
+document.getElementById('qtyMinus')?.addEventListener('click', () => { if (+qty.value > 1) qty.value = +qty.value - 1; });
+document.getElementById('qtyPlus')?.addEventListener('click', () => { if (+qty.value < max) qty.value = +qty.value + 1; });
+
+// Weight selector
+document.querySelectorAll('#weightOptions .weight-option').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#weightOptions .weight-option').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMultiplier = parseFloat(btn.dataset.multiplier);
+    currentWeightLabel = btn.dataset.label;
+    
+    const calcPrice = basePrice * currentMultiplier;
+    document.getElementById('detailPrice').textContent = formatPriceJS(calcPrice);
+    document.getElementById('detailUnit').textContent = '/ ' + currentWeightLabel;
+    
+    const oldPriceEl = document.getElementById('detailOldPrice');
+    if (oldPriceEl && baseOldPrice > 0) {
+      oldPriceEl.textContent = formatPriceJS(baseOldPrice * currentMultiplier);
+    }
+  });
+});
+
+// Parse description for badges (Yöre:, Mahsul Yılı:, Menşei: vb.)
+(function parseBadges() {
+  const descEl = document.getElementById('descriptionArea');
+  const badgeContainer = document.getElementById('parsedBadges');
+  if (!descEl || !badgeContainer) return;
+  
+  const text = descEl.textContent || '';
+  const patterns = [
+    { regex: /Yöre:\s*([^,\n\.]+)/i, icon: '📍', label: 'Yöre' },
+    { regex: /Menşei:\s*([^,\n\.]+)/i, icon: '🌍', label: 'Menşei' },
+    { regex: /Mahsul\s*Y[ıi]l[ıi]:\s*([^,\n\.]+)/i, icon: '📅', label: 'Mahsul Yılı' },
+    { regex: /Kalori:\s*([^,\n\.]+)/i, icon: '⚡', label: 'Kalori' },
+    { regex: /Ağırlık:\s*([^,\n\.]+)/i, icon: '⚖️', label: 'Paket Ağırlığı' },
+  ];
+  
+  let badges = '';
+  patterns.forEach(p => {
+    const match = text.match(p.regex);
+    if (match) {
+      badges += `<span class="product-badge"><span class="badge-icon">${p.icon}</span>${p.label}: ${match[1].trim()}</span>`;
+    }
+  });
+  
+  if (badges) badgeContainer.innerHTML = badges;
+})();
+
+// Gallery & Swatches
+const mainImage = document.getElementById('mainImage');
+const swatches = document.querySelectorAll('.color-swatch-circle');
+const thumbs = document.querySelectorAll('.thumb-item');
+const selectedColorInput = document.getElementById('selectedColorInput');
+const addToCartBtn = document.getElementById('addToCartBtn');
+
+thumbs.forEach((thumb) => {
+  thumb.addEventListener('click', () => {
+    thumbs.forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+    if (mainImage) mainImage.src = thumb.dataset.path;
+  });
+});
+
+swatches.forEach((swatch) => {
+  swatch.addEventListener('click', () => {
+    const isAlreadyActive = swatch.classList.contains('active');
+    swatches.forEach(s => s.classList.remove('active'));
+    if (isAlreadyActive) {
+      selectedColorInput.value = "";
+      thumbs.forEach(t => t.style.display = 'block');
+    } else {
+      swatch.classList.add('active');
+      const colorName = swatch.dataset.colorName;
+      selectedColorInput.value = colorName;
+      let firstMatch = null;
+      thumbs.forEach((t) => {
+        const thumbColor = t.dataset.color;
+        if (!thumbColor || thumbColor === colorName) {
+          t.style.display = 'block';
+          if (thumbColor === colorName && !firstMatch) firstMatch = t;
+        } else {
+          t.style.display = 'none';
+        }
+      });
+      if (firstMatch) {
+        thumbs.forEach(t => t.classList.remove('active'));
+        firstMatch.classList.add('active');
+        if (mainImage) mainImage.src = firstMatch.dataset.path;
+      }
+    }
+  });
+});
+
+// Add to cart with gramaj
+document.getElementById('addToCartBtn')?.addEventListener('click', function() {
+  const btn = this;
+  const selectedColor = selectedColorInput ? selectedColorInput.value : "";
+  
+  if (swatches.length > 0 && !selectedColor) {
+    alert('Lütfen bir seçenek tercih ediniz.');
+    return;
+  }
+
+  const calcPrice = basePrice * currentMultiplier;
+  
+  Cart.add({
+    product_id: +btn.dataset.id,
+    title: btn.dataset.title + ' (' + currentWeightLabel + ')',
+    price: calcPrice,
+    slug: btn.dataset.slug,
+    quantity: +qty.value,
+    selected_color: selectedColor || currentWeightLabel
+  });
+  
+  const orig = btn.innerHTML;
+  btn.innerHTML = '✓ Sepete Eklendi!';
+  btn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+  
+  // Cart Badge Bounce Animation Trigger
+  const badge = document.getElementById('cartCount');
+  if (badge) {
+    badge.classList.remove('cart-bounce');
+    void badge.offsetWidth; // trigger reflow
+    badge.classList.add('cart-bounce');
+  }
+
+  setTimeout(() => { 
+    btn.innerHTML = orig;
+    btn.style.background = '';
+  }, 1500);
+});
+</script>
+
+<%- include('../partials/footer') %>
