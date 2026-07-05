@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | <%= settings?.site_name || 'Kuruyemiş & Organik Ürünler' %></title>
+  <meta name="description" content="<%= typeof metaDescription !== 'undefined' ? metaDescription : (settings?.site_tagline || 'Taptaze kuruyemişler, kuru meyveler ve organik atıştırmalıklar') %>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a href="/" class="logo">
+      <span class="logo-icon">🥜</span>
+      <div>
+        <%= settings?.site_name || 'TAZECİ' %>
+        <span>Kuruyemiş & Organik Ürünler</span>
+      </div>
+    </a>
+
+    <!-- Live Search -->
+    <div class="header-search" id="headerSearch">
+      <span class="header-search-icon">🔍</span>
+      <input type="search" class="header-search-input" id="liveSearchInput" placeholder="Taze kavrulmuş badem ara..." autocomplete="off" aria-label="Ürün ara">
+      <div class="search-results-dropdown" id="searchDropdown"></div>
+    </div>
+
+    <button class="menu-toggle" aria-label="Menü" id="menuToggle">☰</button>
+    <nav class="nav-main" id="mainNav">
+      <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Ana Sayfa</a>
+      <a href="/urunler" class="<%= currentPath?.startsWith('/urun') ? 'active' : '' %>">Ürünler</a>
+      <a href="/siparis-takip" class="<%= currentPath === '/siparis-takip' ? 'active' : '' %>">Sipariş Takip</a>
+      <a href="/iletisim" class="<%= currentPath === '/iletisim' ? 'active' : '' %>">İletişim</a>
+    </nav>
+    <div class="header-actions">
+      <button type="button" class="cart-btn" id="cartDrawerToggle" aria-label="Sepet">
+        🛒 <span class="cart-label">Sepet</span> <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Sidebar Cart Drawer -->
+<div class="cart-drawer-overlay" id="cartDrawerOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>🛒 Sepetim</h3>
+    <button class="cart-drawer-close" id="cartDrawerClose" aria-label="Kapat">&times;</button>
+  </div>
+  <div class="cart-drawer-body" id="cartDrawerBody">
+    <!-- Dynamically populated by cart.js -->
+  </div>
+  <div class="cart-drawer-footer" id="cartDrawerFooter" style="display:none">
+    <div class="cart-drawer-total">
+      <span>Toplam</span>
+      <strong id="cartDrawerTotal">₺0</strong>
+    </div>
+    <div class="cart-drawer-actions">
+      <a href="/sepet" class="btn btn-primary btn-block">Sepete Git</a>
+      <a href="/odeme" class="btn btn-accent btn-block">Siparişi Tamamla</a>
+    </div>
+  </div>
+</aside>
+
+<main>
